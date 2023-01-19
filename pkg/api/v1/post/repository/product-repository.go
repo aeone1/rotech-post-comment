@@ -31,4 +31,43 @@ func CreatePost(tx *sqlx.Tx, post *entities.Post) error {
 	return nil
 }
 
-// func GetPost(tx *sqlx.Tx, post *entities.Post)
+// Fetch all posts
+// TODO Add user filtering
+func GetPosts(tx *sqlx.Tx) ([]*entities.Post, error) {
+	posts := []*entities.Post{}
+	err := tx.Select(
+		&posts,
+		`SELECT id, title, body, created_at 
+		FROM posts
+		WHERE deleted_at IS NULL
+		ORDER BY id DESC`,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return posts, nil
+}
+
+// Fetch post by ID
+func GetPostByID(tx *sqlx.Tx, postId int) (*entities.Post, error) {
+	post := entities.Post{}
+	rows, err := tx.Queryx(
+		`SELECT id, title, body, created_at 
+		FROM posts
+		WHERE 
+			id = $1
+			AND deleted_at IS NULL
+		ORDER BY id DESC`,
+		postId,
+	)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		err = rows.StructScan(&post)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return &post, nil
+}

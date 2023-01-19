@@ -56,6 +56,8 @@ func RunServer() {
 	postService := v1PostService.NewPostService(initializers.DB)
 
 	v1.POST("/posts", postService.CreatePost)
+	v1.GET("/posts", postService.GetPosts)
+	v1.GET("/posts/:id", postService.GetPostByID)
 
 	srv := &http.Server{
 		Addr:    ":"+os.Getenv("PORT"),
