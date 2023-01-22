@@ -32,3 +32,13 @@ func CreatePostsListResponse(posts entities.PostsList) PostsListReponse {
 	}
 	return postsResp
 }
+
+type CountResponse struct {
+	Count int `json:"count"`
+}
+
+func CreateCountResponse(countPosts int) CountResponse {
+	return CountResponse{
+		Count: countPosts,
+	}
+}

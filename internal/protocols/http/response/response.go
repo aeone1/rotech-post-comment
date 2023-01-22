@@ -1,9 +1,9 @@
 package response
 
 import (
-	
 	"github.com/aeone1/rotech-post-comment/internal/protocols/http/errors"
-	
+	"github.com/lib/pq"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,13 +29,31 @@ func Text(c *gin.Context, httpCode int, message string) {
 
 // TODO: implement response error
 func Err(c *gin.Context, err error) {
+	const foreignKeyViolationErrorCode = pq.ErrorCode("23503")
+	foreignKeyViolationErrorMessage := "ForeignKey Violation. Please check all external links/ids (e.g. post_id)"
+	pqErrorMessage := "Something went wrong at the DB level"
+	c.Header("Content-Type", "application/json")
+	if pgErr, isPGErr := err.(*pq.Error); isPGErr {
+		if pgErr.Code == foreignKeyViolationErrorCode {
+			res := Response{
+				Message: &foreignKeyViolationErrorMessage,
+			}
+			c.JSON(403, res)
+			return
+		}
+		res := Response{
+			Message: &pqErrorMessage,
+		}
+		c.JSON(500, res)
+		return
+	}
 	_, ok := err.(*errors.RespError)
 	if !ok {
 		err = errors.InternalServerError(err.Error())
 	}
 
 	er, _ := err.(*errors.RespError)
-	c.Header("Content-Type", "application/json")
+	
 	res := Response{
 		Message: &er.Message,
 	}

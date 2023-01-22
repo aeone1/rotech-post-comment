@@ -11,6 +11,7 @@ import (
 
 	"github.com/aeone1/rotech-post-comment/initializers"
 	v1PostService "github.com/aeone1/rotech-post-comment/pkg/service/http/v1/post"
+	v1CommentService "github.com/aeone1/rotech-post-comment/pkg/service/http/v1/comment"
 
 	"github.com/gin-gonic/gin"
 )
@@ -54,10 +55,20 @@ func RunServer() {
 	v1 := r.Group("/v1")
 
 	postService := v1PostService.NewPostService(initializers.DB)
+	commentService := v1CommentService.NewCommentService(initializers.DB)
 
 	v1.POST("/posts", postService.CreatePost)
 	v1.GET("/posts", postService.GetPosts)
+	v1.GET("/posts/count", postService.GetPostsCount)
 	v1.GET("/posts/:id", postService.GetPostByID)
+	v1.PATCH("/posts/:id", postService.UpdatePost)
+	v1.DELETE("/posts/:id", postService.DeletePost)
+
+	v1.POST("/comments", commentService.CreateComment)
+	v1.GET("/comments", commentService.GetComments)
+	v1.GET("/comments/:id", commentService.GetCommentByID)
+	v1.PATCH("/comments/:id", commentService.UpdateComment)
+	v1.DELETE("/comments/:id", commentService.DeleteComment)
 
 	srv := &http.Server{
 		Addr:    ":"+os.Getenv("PORT"),

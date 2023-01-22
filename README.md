@@ -5,9 +5,25 @@ Simple Rest API (JSON:API) for managing posts and comments
 
 This app manages posts and their comments
 
+## API V1 Path
+- POSTS
+  - POST - Create a post ```{{server}}/v1/posts```
+  - PATCH -  Update a post by id ```{{server}}/v1/posts/:ID```
+  - DELETE -  Delete a post by id ```{{server}}/v1/posts/:ID```
+  - GET byID - Find a post by id ```{{server}}/v1/posts/:ID```
+  - GET count - Count the number of posts that have not been deleted ```{{server}}/v1/posts/count```
+  - GET list - Fetch all posts ```{{server}}/v1/posts```
+
+- COMMENTS
+  - POST
+  - PATCH
+  - DELETE
+  - GET byID
+  - GET list
+
 # CompileDaemon
 
-CompileDaemon -command="./rotech-post-comment" -build="go build ./cmd/server/"
+CompileDaemon -command="./server.exe" -build="go build ./cmd/server/"
 
 ## Set .env variables
 
