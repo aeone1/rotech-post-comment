@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"strings"
+
 	"github.com/aeone1/rotech-post-comment/pkg/api/v1/post/entities"
 )
 
@@ -13,9 +15,9 @@ type PostRequestParams struct {
 	ID int
 }
 
-func (p PostRequestBody) ToPostEntities() *entities.Post {
+func (p PostRequestBody) ToPostEntity() *entities.Post {
 	return &entities.Post{
-		Title:        p.Title,
-		Body: 				p.Body,
+		Title:	strings.TrimSpace(p.Title),
+		Body:		strings.TrimSpace(p.Body),
 	}
 }
